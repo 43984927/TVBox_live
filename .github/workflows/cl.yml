@@ -41,6 +41,29 @@ jobs:
           # hashFiles 可以根据文件哈希创建 key 值，当文件依赖发生变化时，重新存储缓存
           key: ${{ runner.os }}-${{ hashFiles('package.json') }}-node_modules
 
+  run_script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  
+
+    - name: Run Python Script
+      run: |
+          cd Tv_search
+          python search_Tv.py
+
+
   # 2) 构建项目
   build:
     runs-on: ubuntu-latest
