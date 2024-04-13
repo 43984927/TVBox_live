@@ -80,11 +80,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      # 8 上传构建产物（actions/upload-artifact@v3 会上传工作流程中的文件，允许您在作业之间共享数据并在工作流程完成后存储数据）
-      - name: Upload build artifacts
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: "./TVBox_live"
+
 
   # 3) 部署项目
   deploy:
