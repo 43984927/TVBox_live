@@ -26,7 +26,9 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run search_Tv.py
-      run: python search_Tv.py
+      run: |
+          cd Tv_search
+          python search_Tv.py
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
