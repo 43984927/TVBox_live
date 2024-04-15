@@ -28,8 +28,6 @@ RTL
 NHK
 Nippon TV
 TV Asahi
-Hunan TV
-Zhejiang TV
 KBS
 MBC
 SBS
