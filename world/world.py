@@ -6,6 +6,9 @@ import time
 import sys
 from collections import OrderedDict
 import shutil
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 speed = 0.5
 
@@ -36,12 +39,12 @@ def get_url(name):
                 for element in div.xpath(".//tba"):
                     if element.text is not None:
                         m3u8_list.append(element.text.strip())
-                        print(element.text.strip())
+                        logging.info(element.text.strip())
 
         return m3u8_list
 
     except requests.exceptions.RequestException as e:
-        print(f"Error: 请求异常. Exception: {e}")
+        logging.error(f"Error: 请求异常. Exception: {e}")
         return
 
 def download_m3u8(url, name, initial_url=None):
@@ -50,13 +53,13 @@ def download_m3u8(url, name, initial_url=None):
         response.raise_for_status()
         m3u8_content = response.text
     except requests.exceptions.Timeout as e:
-        print(f"{url}\nError: 请求超时. Exception: {e}")
+        logging.error(f"{url}\nError: 请求超时. Exception: {e}")
         return
     except requests.exceptions.RequestException as e:
-        print(f"{url}\nError: 请求异常. Exception: {e}")
+        logging.error(f"{url}\nError: 请求异常. Exception: {e}")
         return
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        logging.error(f"An unexpected error occurred: {e}")
         return
 
     lines = m3u8_content.split('\n')
@@ -83,12 +86,12 @@ def download_m3u8(url, name, initial_url=None):
         total_size += segment_size
         total_time += segment_time
 
-        print(f"Downloaded segment {i + 1}/3: {segment_speed:.2f} MB/s")
+        logging.info(f"Downloaded segment {i + 1}/3: {segment_speed:.2f} MB/s")
 
         os.remove('video.ts')  # Delete the video segment file after speed test
 
     average_speed = total_size / total_time / (1024 * 1024)
-    print(f"---{name}---Average Download Speed: {average_speed:.2f} MB/s")
+    logging.info(f"---{name}---Average Download Speed: {average_speed:.2f} MB/s")
 
     if average_speed >= speed:
         valid_url = initial_url if initial_url is not None else url
@@ -96,8 +99,8 @@ def download_m3u8(url, name, initial_url=None):
             os.makedirs(f'{name}')
         with open(os.path.join(f'{name}', f'{name}.txt'), 'a', encoding='utf-8') as file:
             file.write(f'{name},{valid_url}\n')
-        print(f"---{name}---链接有效源已保存---\n"
-              f"----{valid_url}---")
+        logging.info(f"---{name}---链接有效源已保存---\n"
+                     f"----{valid_url}---")
         return
 
 def detectLinks(name, m3u8_list):
@@ -110,10 +113,10 @@ def detectLinks(name, m3u8_list):
 
     for t in thread:
         try:
-            print(f"Waiting for thread {t} to finish")
+            logging.info(f"Waiting for thread {t} to finish")
             t.join(timeout=10)
         except Exception as e:
-            print(f"Thread {t.name} raised an exception: {e}")
+            logging.error(f"Thread {t.name} raised an exception: {e}")
 
 def merge_links(tv):
     txt_files = [f for f in os.listdir(os.path.join(current_directory, f'{tv}'))]
@@ -129,7 +132,7 @@ def merge_links(tv):
 
                 output_file.write('\n')
 
-    print(f'Merged content from {len(txt_files)} files into {output_file_path}')
+    logging.info(f'Merged content from {len(txt_files)} files into {output_file_path}')
 
 def remove_duplicates(filepath):
     with open(filepath, 'r', encoding='utf-8') as file:
@@ -140,7 +143,7 @@ def remove_duplicates(filepath):
     with open(filepath, 'w', encoding='utf-8') as file:
         file.writelines(unique_lines_ordered)
 
-    print('-----直播源去重完成！------')
+    logging.info('-----直播源去重完成！------')
 
 if __name__ == '__main__':
     current_directory = os.getcwd()
@@ -156,9 +159,9 @@ if __name__ == '__main__':
         if os.path.exists(TV_name):
             try:
                 shutil.rmtree(TV_name)
-                print(f"Folder '{TV_name}' deleted successfully.")
+                logging.info(f"Folder '{TV_name}' deleted successfully.")
             except OSError as e:
-                print(f"Error deleting folder '{TV_name}': {e}")
+                logging.error(f"Error deleting folder '{TV_name}': {e}")
 
         time.sleep(1)
         if not os.path.exists(TV_name):
