@@ -16,3 +16,7 @@ CCTV15
 CHC家庭影院
 CHC动作电影
 CHC高清电影
+CGTN美国
+CGTN法语
+CGTN纪录
+CGTN俄语
