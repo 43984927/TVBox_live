@@ -5,8 +5,9 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 */12 * * *'  # Runs every 12 hours
-    
+    - cron: '0 0 */2 * *'  # Runs every 2 days at midnight
+    - cron: '0 12 */2 * *' # Runs every 2 days at noon
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,10 +26,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Python Script
-      run: |
-          cd Tv_search
-          python search_Tv.py
+    - name: Run search_Tv.py
+      run: python search_Tv.py
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
