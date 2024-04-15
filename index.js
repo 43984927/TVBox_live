@@ -1,1 +1,1 @@
-console.log("Hello Github Pages");
+window.location.href = 'live.txt';
