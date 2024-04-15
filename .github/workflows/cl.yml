@@ -6,7 +6,6 @@ on:
       - main
   schedule:
     - cron: '0 0 */2 * *'  # Runs every 2 days at midnight
-    - cron: '0 12 */2 * *' # Runs every 2 days at noon
 
 jobs:
   build:
