@@ -212,7 +212,7 @@ if __name__ == '__main__':
     #     speed = 1
     # else:
     #     speed = float(speed)
-    speed = 1
+    speed = 0.5
     # 获取当前工作目录
     current_directory = os.getcwd()
     # 构造上级目录的路径
