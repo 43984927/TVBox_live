@@ -51,7 +51,6 @@ def get_url(name):
     }
 
     url = "http://tonkiang.us/"
-    # 电视台名字搜索
     data = {
         "search": f"{name}",
         "Submit": " "
@@ -59,134 +58,36 @@ def get_url(name):
     try:
         res = requests.get(url, headers=headers, data=data, verify=False)
         cookie = res.cookies
-        # 搜索页数
-        m3u8_list = []
+
         for i in range(5):
             url = f"http://tonkiang.us/?page={i + 1}&s={name}"
             time.sleep(10)
             response = requests.get(url, headers=headers, cookies=cookie, verify=False)
-            # print(response.text)
-            # 将 HTML 转换为 Element 对象
             root = etree.HTML(response.text)
             result_divs = root.xpath("//div[@class='result']")
-            # 打印提取到的 <div class="result"> 标签
             for div in result_divs:
-                # 如果要获取标签内的文本内容
-                # print(etree.tostring(div, pretty_print=True).decode())
                 for element in div.xpath(".//tba"):
                     if element.text is not None:
-                        m3u8_list.append(element.text.strip())
-                        print(element.text.strip())
-        return m3u8_list
+                        yield element.text.strip()
 
     except requests.exceptions.RequestException as e:
         print(f"Error: 请求异常. Exception: {e}")
         return
 
-
-def download_m3u8(url, name, initial_url=None):
-    try:
-        # 下载M3U8文件
-        # with requests.get(url, timeout=10) as response:
-        #     response.raise_for_status()
-        response = requests.get(url, stream=True, timeout=15)
-        response.raise_for_status()  # 检查请求是否成功
-        m3u8_content = response.text
-    except requests.exceptions.Timeout as e:
-        print(f"{url}\nError: 请求超时. Exception: {e}")
-        return
-    except requests.exceptions.RequestException as e:
-        print(f"{url}\nError: 请求异常. Exception: {e}")
-        return
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        return
-    else:
-        # 解析M3U8文件，获取视频片段链接
-        lines = m3u8_content.split('\n')
-        segments = [line.strip() for line in lines if line and not line.startswith('#')]
-        if len(segments) == 1:
-            # 在递归调用时传递 initial_url 参数
-            return download_m3u8(segments[0], name, initial_url=initial_url if initial_url is not None else url)
-
-        # 下载指定数量的视频片段并计算下载速度
-        total_size = 0
-        total_time = 0
-        for i, segment in enumerate(segments[:3]):
-            start_time = time.time()
-            segment_url = url.rsplit('/', 1)[0] + '/' + segment
-            response = requests.get(segment_url)
-            end_time = time.time()
-
-            # 将视频片段保存到本地
-            with open('video.ts', 'wb') as f:
-                f.write(response.content)
-
-            # 计算下载速度
-            segment_size = len(response.content)
-            segment_time = end_time - start_time
-            segment_speed = segment_size / segment_time / (1024 * 1024)  # 转换为MB/s
-
-            total_size += segment_size
-            total_time += segment_time
-
-            print(f"Downloaded segment {i + 1}/3: {segment_speed:.2f} MB/s")
-
-        # 计算平均下载速度
-        average_speed = total_size / total_time / (1024 * 1024)  # 转换为MB/s
-        print(f"---{name}---Average Download Speed: {average_speed:.2f} MB/s")
-        # print(f"---{name}---平均速度: {average_speed:.2f} MB/s")
-
-        # 速度阈值，默认1MB/s
-        if average_speed >= speed:
-            valid_url = initial_url if initial_url is not None else url
-            if not os.path.exists(f'{TV_name}'):
-                os.makedirs(f'{TV_name}')
-            with open(os.path.join(f'{TV_name}', f'{name}.txt'), 'a', encoding='utf-8') as file:
-                file.write(f'{name},{valid_url}\n')
-            print(f"---{name}---链接有效源已保存---\n"
-                  f"----{valid_url}---")
-            return
-
-
-def detectLinks(name, m3u8_list):
-    thread = []
-    for m3u8_url in m3u8_list:
-        t = threading.Thread(target=download_m3u8, args=(m3u8_url, name,))
-        t.daemon = True  # 设置为守护线程,确保在主线程退出时，所有子线程都会被强制终止
-        t.start()
-        thread.append(t)
-    # 等待所有线程完成
-    for t in thread:
-        try:
-            print(f"Waiting for thread {t} to finish")
-            t.join(timeout=10)  # 等待线程超时
-        except Exception as e:
-            print(f"Thread {t.name} raised an exception: {e}")
-
-
 def mer_links(tv):
-    # 获取文件夹中的所有 txt 文件
     txt_files = [f for f in os.listdir(os.path.join(current_directory, f'{tv}'))]
-    print(txt_files)
-    # 打开合并后的文件，使用 'a' 模式以追加的方式写入
     with open(output_file_path, 'a', encoding='utf-8') as output_file:
         output_file.write(f'{tv},#genre#' + '\n')
         for txt_file in txt_files:
-            # 拼接文件的完整路径
             file_path = os.path.join(os.path.join(current_directory, f'{tv}'), txt_file)
-
-            # 打开当前 txt 文件并读取内容
             with open(file_path, 'r', encoding='utf-8') as input_file:
-                file_content = input_file.read()
-
-                # 将当前 txt 文件的内容写入合并后的文件
-                output_file.write(file_content)
-
-                # 可以选择在每个文件之间加入换行，使合并后的内容更清晰
-                output_file.write('\n')
+                for line in input_file:
+                    output_file.write(line)
+                    output_file.write('\n')
 
     print(f'Merged content from {len(txt_files)} files into {output_file_path}')
+
+if __name__ == '__main__':
 
 
 def re_dup(filepath):
