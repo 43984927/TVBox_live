@@ -1,0 +1,5 @@
+TVB,http://50.7.238.114:8278/tvbs/playlist.m3u8?tid=MEFE3093330530933305&ct=19249&tsum=ce6b5e9293b3618104ad53084745a223
+TVB,http://38.64.72.148/hls/modn/list/4005/chunklist1.m3u8
+TVB,http://50.7.238.114:8278/j2_twn/playlist.m3u8?tid=m22905da1d346&ct=18336&tsum=3b4998c4f5367bb820165f66b0caab0e
+TVB,http://50.7.238.114:8278/j2_twn/playlist.m3u8?tid=ME0E4382171043821710&ct=19237&tsum=6f10351124a4eb90780b2f84b2c4d349
+TVB,http://38.64.72.148:80/hls/modn/list/4005/chunklist0.m3u8
