@@ -6,7 +6,8 @@ on:
       - main
   schedule:
     - cron: '0 0 */2 * *'  # Runs every 2 days at midnight
-
+ workflow_dispatch:
+ 
 jobs:
   build:
     runs-on: ubuntu-latest
