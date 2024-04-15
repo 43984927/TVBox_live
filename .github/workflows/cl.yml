@@ -14,12 +14,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Clean system cache
+      run: |
+        sudo apt-get clean
+        sudo apt-get autoclean
+        sudo apt-get autoremove
+
+    - name: Clear workflow cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Add cache busting
-      run: echo "::set-env name=CACHE_BUSTER::$(date +%s)"
-        
+      
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
