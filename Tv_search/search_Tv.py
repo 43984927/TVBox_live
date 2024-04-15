@@ -43,7 +43,7 @@ def get_url(name):
 
 def download_m3u8(url, name, initial_url=None):
     try:
-        response = requests.get(url, stream=True, timeout=15)
+        response = requests.get(url, stream=True, timeout=3)  # 设置超时时间为3秒
         response.raise_for_status()
         m3u8_content = response.text
     except requests.exceptions.Timeout as e:
@@ -67,7 +67,7 @@ def download_m3u8(url, name, initial_url=None):
     for i, segment in enumerate(segments[:3]):
         start_time = time.time()
         segment_url = url.rsplit('/', 1)[0] + '/' + segment
-        response = requests.get(segment_url)
+        response = requests.get(segment_url, timeout=3)  # 设置超时时间为3秒
         end_time = time.time()
 
         with open('video.ts', 'wb') as f:
@@ -81,6 +81,8 @@ def download_m3u8(url, name, initial_url=None):
         total_time += segment_time
 
         print(f"Downloaded segment {i + 1}/3: {segment_speed:.2f} MB/s")
+
+        os.remove('video.ts')  # Delete the video segment file after speed test
 
     average_speed = total_size / total_time / (1024 * 1024)
     print(f"---{name}---Average Download Speed: {average_speed:.2f} MB/s")
@@ -170,7 +172,6 @@ if __name__ == '__main__':
         mer_links(TV_name)
     
     time.sleep(10)
-    os.remove('video.ts')
     
     re_dup(output_file_path)
     
