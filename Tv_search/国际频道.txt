@@ -1,0 +1,40 @@
+CNN
+BBC World News
+Globo
+NTV
+ABC
+CBS
+NBC
+FOX
+CNN
+BBC One
+ITV
+Channel 4
+Sky News
+CBC
+CTV
+Global
+ABC
+Seven Network
+Nine Network
+Network Ten
+TF1
+France 2
+France 3
+ARD
+ZDF
+RTL
+NHK
+Nippon TV
+TV Asahi
+Hunan TV
+Zhejiang TV
+KBS
+MBC
+SBS
+DD National
+Zee TV
+Star Plus
+Globo
+SBT
+RecordTV
