@@ -1,0 +1,57 @@
+name: Generate and Display Results
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate_and_display_results:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Move and Rename Python script
+      run: |
+        mkdir -p TVBox_live  # 创建目录 TVBox_live
+        mv pyt.py TVBox_live/search_Tv.py  # 将 pyt.py 移动并重命名为 search_Tv.py
+        git add TVBox_live/search_Tv.py
+        git commit -m "Move and rename Python script"
+        git push
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Python script
+      run: python TVBox_live/search_Tv.py
+
+    - name: Save results
+      run: |
+        mkdir -p docs
+        mv result.txt docs/result.txt
+        git add docs/result.txt
+        git commit -m "Add generated result file"
+        git push
+
+    - name: Generate Results Page
+      run: |
+        echo "<html><body><h1>Generated Results</h1><a href='result.txt'>View Results</a></body></html>" > docs/index.html
+        git add docs/index.html
+        git commit -m "Add results page"
+        git push
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: docs
