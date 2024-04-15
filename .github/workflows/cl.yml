@@ -1,4 +1,4 @@
-ame: Generate and Deploy Live File
+name: Generate and Deploy Live File
 
 on:
   push:
