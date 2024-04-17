@@ -1,4 +1,6 @@
+大爱2台,https://pulltv1.wanfudaluye.com/live/tv2.m3u8
+大爱2台,https://pulltv1.wanfudaluye.com/live/tv2.m3u8?$1280x720
+大爱2台,https://pulltv1.wanfudaluye.com/live/tv2.m3u8
 大爱2台,https://pulltv2.wanfudaluye.com/live/tv2.m3u8?$1280x720
-大爱2台,https://epg.pw/stream/60efaf070c91949a4c4e52c9d35746ebfb99b5318b43115c15205965c5807948.m3u8
 大爱2台,https://pulltv2.wanfudaluye.com/live/tv2.m3u8
 大爱2台,http://50.7.238.114:8278/daai_twn/playlist.m3u8?tid=MF5F4357730143577301&ct=19225&tsum=10c092424b1c12259444b68ad663c9eb

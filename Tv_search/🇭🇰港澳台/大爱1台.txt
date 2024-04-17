@@ -1,4 +1,6 @@
-大爱1台,https://pulltv1.wanfudaluye.com/live/tv1.m3u8
-大爱1台,http://50.7.238.114:8278/daai_twn/playlist.m3u8?tid=ME5E3594665135946651&ct=19249&tsum=1628ac38fd6a79879fccae39de8e845b
+大爱1台,https://pulltv1.wanfudaluye.com/live/tv1.m3u8?$1280x720
 大爱1台,https://pulltv2.wanfudaluye.com/live/tv2.m3u8
+大爱1台,https://pulltv1.wanfudaluye.com/live/tv1.m3u8
 大爱1台,https://pulltv2.wanfudaluye.com/live/tv1.m3u8
+大爱1台,http://50.7.238.114:8278/daai_twn/playlist.m3u8?tid=ME5E3594665135946651&ct=19249&tsum=1628ac38fd6a79879fccae39de8e845b
+大爱1台,http://50.7.238.114:8278/daai_twn/playlist.m3u8?tid=ME5E3594665135946651&ct=19249&tsum=1628ac38fd6a79879fccae39de8e845b
