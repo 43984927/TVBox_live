@@ -1,0 +1,45 @@
+name: Generate and Display Results
+
+on:
+  push:
+    branches:
+      - main  # 触发主分支的推送事件
+
+jobs:
+  generate_and_display_results:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run Python script
+      run: python search_Tv.py
+
+    - name: Save results
+      run: |
+        # 将生成的结果文件添加到仓库
+        git add result.txt
+        git commit -m "Add generated result file"
+        git push
+    - name: Generate Results Page
+      run: |
+        echo "<html><body><h1>Generated Results</h1><a href='result.txt'>View Results</a></body></html>" > index.html
+        git add index.html
+        git commit -m "Add results page"
+        git push
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: .
