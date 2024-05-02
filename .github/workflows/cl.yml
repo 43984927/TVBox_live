@@ -1,48 +1,46 @@
-name: Generate and Deploy Live File
+name: Run Python Script and Deploy Live Text File
 
 on:
-  push:
-    branches:
-      - main
-  schedule:
-    - cron: '0 0 */2 * *'  # 每2天执行一次
   workflow_dispatch:
 
 jobs:
-  build:
+  run_script:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
+    - name: Checkout Repository
+      uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
 
-    - name: Run search_Tv.py
+    - name: Install dependencies
       run: |
-          cd Tv_search
-          python search_Tv.py
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  
 
-      - 这个步骤无需更改，因为 live.txt 应该已经在上一个步骤中被生成
-      - name: Commit and push changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Actions"
-          git add live.txt
-          git commit -m "Update live.txt" -a || echo "No changes to commit."
-          git push origin HEAD:gh-pages
+    - name: Run Python Script
+      run: |
+        cd Tv_search
+        python search_Tv.py
 
-      - 使用 peaceiris/actions-gh-pages 动作将代码部署到GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./  # 指向包含 live.txt 的目录
+    # 假设您的脚本已经生成了 live.txt 文件，
+    # 下面的步骤将这个文件提交到一个分支（通常是 gh-pages）。
+    - name: Commit live.txt File
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Actions"
+        git add Tv_search/live.txt
+        git commit -m "Update live.txt" -a || echo "No changes to commit."
+        # 这将把修改推送到gh-pages分支，这个分支会被GitHub Pages用来发布内容。
+        git push origin HEAD:gh-pages
+
+    # 这个步骤用于部署到GitHub Pages。
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        keep_files: true  # 保留已存在的文件
+        publish_dir: ./Tv_search/  # 在这个目录下搜索 live.txt 文件
