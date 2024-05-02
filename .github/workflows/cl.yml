@@ -1,46 +1,46 @@
-name: Run Python Script and Deploy Live Text File
+name: Generate and Deploy Live File
 
 on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 */2 * *'  # Runs every 2 days at midnight
   workflow_dispatch:
 
 jobs:
-  run_script:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2  # 检出代码
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'  # 设置Python版本
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip  # 更新pip
+          pip install -r requirements.txt  # 安装依赖
 
-    - name: Install dependencies
+    - name: Run search_Tv.py
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt  
+          cd Tv_search
+          python search_Tv.py
 
-    - name: Run Python Script
-      run: |
-        cd Tv_search
-        python search_Tv.py
+      - name: Commit and push live.txt to the repository
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          git add live.txt
+          git commit -m "Updated live.txt with new data"
+          git push  # 推送到当前分支，GitHub pages应当配置为基于这个分支来发布网站
 
-    # 假设您的脚本已经生成了 live.txt 文件，
-    # 下面的步骤将这个文件提交到一个分支（通常是 gh-pages）。
-    - name: Commit live.txt File
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Actions"
-        git add Tv_search/live.txt
-        git commit -m "Update live.txt" -a || echo "No changes to commit."
-        # 这将把修改推送到gh-pages分支，这个分支会被GitHub Pages用来发布内容。
-        git push origin HEAD:gh-pages
-
-    # 这个步骤用于部署到GitHub Pages。
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        keep_files: true  # 保留已存在的文件
-        publish_dir: ./Tv_search/  # 在这个目录下搜索 live.txt 文件
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3  # 使用第三方动作来部署GitHub Pages
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # 使用GitHub提供的token进行权限认证
+          publish_dir: ./  # live.txt的目录，这应当与生成该文件的目录相对应
