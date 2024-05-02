@@ -25,13 +25,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-        run: |
+    run: |
           cd Tv_search
           python search_Tv.py
-
-      - name: Commit and push live.txt to the repository
-        run: |
+ 
+        - name: upate
+    run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
           git add live.txt
